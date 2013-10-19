@@ -1,4 +1,4 @@
-define(function () {
+define(['domain/note'], function (Note) {
 
    "use strict";
 

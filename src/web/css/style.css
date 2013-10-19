@@ -1,0 +1,107 @@
+body, html {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: verdana, helvetica, sans-serif;
+    font-size: 12px;
+    -webkit-transition: all 500ms linear;
+}
+
+#site-container {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: visible;
+    position: absolute;
+}
+
+
+@media (max-width: 400px) { /* iPhone/iPod */
+    body { font-size: 14px; }
+}
+@media (max-width: 769px) and (min-width: 401px) {
+    body { font-size: 18px; }
+}
+
+section {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+
+    background: rgba(0,0,0,0.1);
+    border-radius: 10px;
+    padding: 10px;
+
+    -webkit-transition-property: -webkit-transform, opacity;
+    -webkit-transition-duration: 250ms;
+    -webkit-transition-timing-function: linear;
+}
+
+#notes-list {                 -webkit-transform: scale(1.4); opacity: 0; z-index: 1; }
+#editor {                     -webkit-transform: scale(0.6); opacity: 0; z-index: 1; -webkit-transition-delay: 100ms; bottom: 5px; }
+#sync {                       -webkit-transform: scale(0.6); opacity: 0; z-index: 1; }
+
+.showing-notes #notes-list, .showing-form  #editor, .showing-sync #sync {
+    -webkit-transform: scale(1.0); opacity: 1; z-index: 2; }
+
+ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+li {
+    margin-bottom: 1em;
+}
+li:last-child {
+    margin-bottom: 0;
+}
+li a {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+li a.button {
+    margin-right: 5px;
+}
+textarea {
+    display: block;
+    outline: none;
+    margin-bottom: 1em;
+    border: none;
+    padding: 0;
+    background: transparent;
+    font-size: 1em;
+
+    position: absolute;
+    top: 10px;
+    bottom: 2.5em;
+    left: 10px;
+    right: 10px;
+}
+textarea:focus {
+    background: rgba(0,0,0,0.1);
+    font-family: Andale Mono, Courier New, monospace;
+}
+a {
+    text-decoration: none;
+    color: #333;
+}
+a.button {
+    display: inline-block;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    background: rgba(0,0,0,0.3);
+    color: rgba(255,255,255,0.8);
+}
+.buttons {
+    position: absolute;
+    bottom: 0.5em;
+}
+
+@media (min-width: 770px) {
+    a { -webkit-transition: all 200ms linear; }
+    a:hover { text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+    a.button:hover { background: rgba(0,0,0,0.5); }
+}

@@ -1,4 +1,4 @@
-define(['jquery', 'domain/note'], function(jQuery, Note) {
+define(['jquery', 'domain/note', 'domain/notesmodel'], function(jQuery, Note, NotesModel) {
 
    "use strict";
 
@@ -93,12 +93,22 @@ define(['jquery', 'domain/note'], function(jQuery, Note) {
    };
 
    Notes.prototype._doSync = function(e) {
-      if (e && e.preventDefault) e.preventDefault();
+      e.preventDefault();
 
-      jQuery('<form action="./synchronise" method="post"></form>')
-          .append(jQuery('<input type="hidden" name="notes">').val(JSON.stringify(this._model.notes)))
-          .appendTo(document.body)
-          .get(0).submit();
+      jQuery.ajax('/user/ping', {
+         context: this,
+         error: function() {
+            location.href = '/user/login?next=/';
+         }
+      })
+          .then(function() {
+             debugger;
+
+//             jQuery('<form action="./synchronise" method="post"></form>')
+//                 .append(jQuery('<input type="hidden" name="notes">').val(JSON.stringify(this._model.notes)))
+//                 .appendTo(document.body)
+//                 .get(0).submit();
+          })
    };
 
    Notes.prototype._fetchSync = function(e) {
