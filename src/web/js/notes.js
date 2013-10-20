@@ -26,6 +26,13 @@ define(['jquery', 'domain/note', 'domain/notesmodel'], function(jQuery, Note, No
       var notes = this._model.getSorted(NotesModel.sortByModifiedDate);
 
       var ul = jQuery('#notes-list ul').detach().empty();
+
+      ul.append(
+          jQuery('<li />')
+              .append('<a class="button" href="#new">Create New</a>')
+              .append('<a class="button" href="#sync">Synchronise</a>')
+      );
+
       for (var i = 0, l = notes.length; i < l; i++) {
          ul.append(
              jQuery('<li><a href="#"></a></li>')
@@ -36,11 +43,7 @@ define(['jquery', 'domain/note', 'domain/notesmodel'], function(jQuery, Note, No
          );
       }
 
-      ul.append(
-          jQuery('<li />')
-              .append('<a class="button" href="#new">Create New</a>')
-              .append('<a class="button" href="#sync">Synchronise</a>')
-      ).appendTo('#notes-list');
+      ul.appendTo('#notes-list');
 
       document.body.className = 'showing-notes';
    };
@@ -94,21 +97,24 @@ define(['jquery', 'domain/note', 'domain/notesmodel'], function(jQuery, Note, No
 
    Notes.prototype._doSync = function(e) {
       e.preventDefault();
+      var notesModel = this._model;
 
-      jQuery.ajax('/user/ping', {
-         context: this,
-         error: function() {
-            location.href = '/user/login?next=/';
-         }
-      })
+      jQuery.ajax('/user/ping', { error: Notes.login })
           .then(function() {
-             debugger;
-
-//             jQuery('<form action="./synchronise" method="post"></form>')
-//                 .append(jQuery('<input type="hidden" name="notes">').val(JSON.stringify(this._model.notes)))
-//                 .appendTo(document.body)
-//                 .get(0).submit();
-          })
+             jQuery.ajax('/user/notes', {
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ notes: notesModel.notes }),
+                success: function(data) {
+                   notesModel.clear(true); // kill any existing notes
+                   for(var noteId in data) {
+                      var note = data[noteId];
+                      notesModel.addNote(new Note(note.content, noteId).withDate(note.date));
+                   }
+                   location.hash = '#list';
+                }
+             });
+          });
    };
 
    Notes.prototype._fetchSync = function(e) {
@@ -156,6 +162,10 @@ define(['jquery', 'domain/note', 'domain/notesmodel'], function(jQuery, Note, No
             }
          })
       }, 350);
+   };
+
+   Notes.login = function() {
+      location.href = '/user/login?next=' + encodeURIComponent(location.href);
    };
 
    return Notes;

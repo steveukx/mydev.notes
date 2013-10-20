@@ -32,6 +32,15 @@ define(function () {
    Note.prototype.id = null;
 
    /**
+    * Chainable date setter
+    * @param {Date|Number|String} date
+    */
+   Note.prototype.withDate = function(date) {
+      this.date = date instanceof Date ? date : new Date(date);
+      return this;
+   };
+
+   /**
     * Create a note from some arbitrary object.
     *
     * @param {Object} json
