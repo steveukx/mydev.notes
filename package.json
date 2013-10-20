@@ -1,8 +1,9 @@
 {
-  "name": "todo-notes",
+  "name": "notes-app",
   "description": "Notes application with persistence layer backed by Google auth",
   "version": "0.0.1",
   "author": "Steve King <steve@mydev.co>",
+  "license": "MIT",
   "repository": "git://github.com/steveukx/mydev.notes",
   "main": "server/index.js",
   "dependencies": {
@@ -19,5 +20,8 @@
     "grunt-contrib-requirejs": "~0.4.1",
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-git": "git+https://github.com/steveukx/grunt-git"
+  },
+  "scripts": {
+    "start": "node src/server/index"
   }
 }
