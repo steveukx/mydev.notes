@@ -96,12 +96,10 @@ app.post('/notes', function(req, res) {
             var clientId = clientNote.id;
 
             if(invalidDate || !notes[ clientId] || notes[clientId].date < clientDate) {
-               (notes[clientId] = Note({
-                                       user: user,
-                                       content: clientNote.content,
-                                       id: clientId,
-                                       date: invalidDate ? new Date() : clientDate
-                                    })).save();
+               var note = notes[clientId] = notes[ clientId] || Note({ user: user, id: clientId });
+               note.content = clientNote.content;
+               note.date = invalidDate ? new Date() : clientDate;
+               note.save();
             }
          });
       }
