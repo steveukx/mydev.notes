@@ -56,7 +56,7 @@ app.use('/login', function(req, res, next) {
 });
 
 app.get('/', function(req, res) {
-   res.send(req.user);
+   res.redirect('../');
 });
 
 app.get('/notes/:note', function(req, res) {

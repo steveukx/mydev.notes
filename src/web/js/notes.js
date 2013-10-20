@@ -57,7 +57,6 @@ define(['jquery', 'domain/note', 'domain/notesmodel'], function(jQuery, Note, No
       jQuery(window).on('hashchange', this._handleHashChange.bind(this));
 
       jQuery('#doSync').on('click', this._doSync.bind(this));
-      jQuery('#fetchSync').on('click', this._fetchSync.bind(this));
    };
 
    /**
@@ -100,34 +99,26 @@ define(['jquery', 'domain/note', 'domain/notesmodel'], function(jQuery, Note, No
       var notesModel = this._model;
 
       jQuery.ajax('/user/ping', { error: Notes.login })
-          .then(function() {
-             jQuery.ajax('/user/notes', {
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ notes: notesModel.notes }),
-                success: function(data) {
-                   notesModel.clear(true); // kill any existing notes
-                   for(var noteId in data) {
-                      var note = data[noteId];
-                      notesModel.addNote(new Note(note.content, noteId).withDate(note.date));
+          .then(
+             function() {
+                jQuery.ajax('/user/notes', {
+                   type: 'POST',
+                   contentType: 'application/json',
+                   data: JSON.stringify({ notes: notesModel.notes }),
+                   success: function(data) {
+                      notesModel.clear(true); // kill any existing notes
+                      for(var noteId in data) {
+                         var note = data[noteId];
+                         notesModel.addNote(new Note(note.content, noteId).withDate(note.date));
+                      }
+                      location.hash = '#list';
                    }
-                   location.hash = '#list';
-                }
-             });
-          });
-   };
-
-   Notes.prototype._fetchSync = function(e) {
-      if (e && e.preventDefault) e.preventDefault();
-
-      var notesModel = this._model;
-      jQuery.getJSON('./synchronise/update', function(data) {
-         for (var i = 0, l = data.length; i < l; i++) {
-            notesModel.addNote(Note.build(data[i]));
-         }
-         notesModel.reload();
-         location.hash = 'list';
-      });
+                });
+             },
+            function() {
+               location.href = '/user/';
+            }
+         );
    };
 
    Notes.prototype._handleHashChange = function() {
