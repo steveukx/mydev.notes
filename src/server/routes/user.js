@@ -1,8 +1,9 @@
 
+var Commands = require('commands');
 var Session = require('session-middleware');
 var GoogleAuth = require('gauth');
 var googleAuth = new GoogleAuth(
-                        GoogleAuth.configure('base.url', 'http://localhost:9874/user/login'),
+                        GoogleAuth.configure('base.url', Commands.get('base', 'http://localhost:9874/user/login')),
                         GoogleAuth.filePersistence(__dirname + '/.googleauth'));
 
 var express = require('express');
@@ -17,7 +18,7 @@ app.use(function(req, res, next) {
    }
 });
 
-app.use(Session.middleware("encrypt-me" + process.env.sessionKey));
+app.use(Session.middleware("encrypt-me" + Commands.get('salt', process.env.sessionKey)));
 app.use(express.bodyParser());
 app.param('note', function(req, res, next, note) {
    req.app.get('database').findOne({ user: req.session.user.email, id: note }, function(err, doc) {

@@ -1,22 +1,23 @@
 {
-   "name": "todo-notes",
-   "description": "Notes application with persistence layer backed by Google auth",
-   "version": "0.0.1",
-   "author": "Steve King <steve@mydev.co>",
-   "repository": "git://github.com/steveukx/mydev.notes",
-   "main": "server/index.js",
-   "dependencies": {
-      "gauth": "0.0.1",
-      "express": "~3.4.0",
-      "session-middleware": "~1.0.2",
-      "mongoose": "~3.6.20"
-   },
-   "devDependencies": {
-      "unit-test": "*",
-      "grunt": "~0.4.1",
-      "grunt-release-steps": "~0.3.7",
-      "grunt-contrib-requirejs": "~0.4.1",
-      "grunt-contrib-uglify": "~0.2.2",
-      "grunt-git": "git+https://github.com/steveukx/grunt-git"
-   }
+  "name": "todo-notes",
+  "description": "Notes application with persistence layer backed by Google auth",
+  "version": "0.0.1",
+  "author": "Steve King <steve@mydev.co>",
+  "repository": "git://github.com/steveukx/mydev.notes",
+  "main": "server/index.js",
+  "dependencies": {
+    "gauth": "0.0.1",
+    "express": "~3.4.0",
+    "session-middleware": "~1.0.2",
+    "mongoose": "~3.6.20",
+    "commands": "0.0.7"
+  },
+  "devDependencies": {
+    "unit-test": "*",
+    "grunt": "~0.4.1",
+    "grunt-release-steps": "~0.3.7",
+    "grunt-contrib-requirejs": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-git": "git+https://github.com/steveukx/grunt-git"
+  }
 }

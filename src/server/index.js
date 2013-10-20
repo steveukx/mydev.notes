@@ -1,11 +1,13 @@
 
+var Commands = require('commands');
 var express = require('express');
 var app = express();
 
 app.set('database', require('./database'));
 
-app.use(express.static(require('path').join(__dirname, '../web'), {maxAge: 0})); // 86400000
+app.use(express.static(require('path').join(__dirname, '../web'),
+    {maxAge: process.ENV.NODE_ENV === 'development' ? 0 : 86400000}));
 
 app.use('/user', require('./routes/user'));
 
-app.listen(9874);
+app.listen(Commands.get('port', 9874));
