@@ -20,8 +20,12 @@ encryption either set the command line argument `-salt` or run the process with 
 
 # Limitations
 
-Clearly lacking encryption - everything is in plain text in the database, so while
-[gauth](https://npmjs.org/package/gauth) means there's no passwords there is an email address, this wil be fixed soon.
+Authentication is only through [gauth](https://npmjs.org/package/gauth) so users need to log in through Google.
+
+# Privacy
+
+The google email address is hashed before saving to the database, and notes are encrypted using the
+[RC4](http://en.wikipedia.org/wiki/RC4) cipher.
 
 # Patches and Pull Requests
 

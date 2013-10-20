@@ -1,5 +1,7 @@
 
+var Crypto = require('crypto');
 var Commands = require('commands');
+var hashSalt = Commands.get('salt', process.env.sessionKey);
 var Session = require('session-middleware');
 var GoogleAuth = require('gauth');
 var googleAuth = new GoogleAuth(
@@ -18,10 +20,10 @@ app.use(function(req, res, next) {
    }
 });
 
-app.use(Session.middleware("encrypt-me" + Commands.get('salt', process.env.sessionKey)));
+app.use(Session.middleware("encrypt-me-" + hashSalt));
 app.use(express.bodyParser());
 app.param('note', function(req, res, next, note) {
-   req.app.get('database').findOne({ user: req.session.user.email, id: note }, function(err, doc) {
+   req.app.get('database').findOne({ user: req.session.user.id, id: note }, function(err, doc) {
       req.note = doc || null;
       next();
    })
@@ -44,7 +46,9 @@ app.use(function(req, res, next) {
 });
 
 app.use('/login', googleAuth.middleware(function(userJson, next) {
-      next(null, {email: userJson.email});
+      next(null, {
+         id: Crypto.createHash('sha1').update(userJson.email + hashSalt, 'utf8').digest('base64')
+      });
     }));
 
 app.use('/login', function(req, res, next) {
@@ -71,8 +75,7 @@ app.delete('/notes/:note', function(req, res) {
 
 app.put('/notes/:note', function(req, res) {
    var note = req.note || req.app.get('database')( { user: req.user, id: req.params.note });
-   note.content = req.body.content;
-   note.date = new Date(req.body.date);
+   note.text(req.body.content).date = new Date(req.body.date);
 
    note.save(function(err) {
       res.send(err ? { result: false, error: err.toString() } : note, err ? 400 : 200);
@@ -81,7 +84,7 @@ app.put('/notes/:note', function(req, res) {
 
 app.post('/notes', function(req, res) {
    var clientNotes = req.body.notes;
-   var user = req.user.email;
+   var user = req.user.id;
    var Note = req.app.get('database');
 
    Note.find({ user: user }, function(err, serverNotes) {
@@ -98,9 +101,8 @@ app.post('/notes', function(req, res) {
 
             if(invalidDate || !notes[ clientId] || notes[clientId].date < clientDate) {
                var note = notes[clientId] = notes[ clientId] || Note({ user: user, id: clientId });
-               note.content = clientNote.content;
                note.date = invalidDate ? new Date() : clientDate;
-               note.save();
+               note.text(clientNote.content).save();
             }
          });
       }
