@@ -29,11 +29,13 @@
          var notesJson = JSON.stringify(notes);
          alert('Serialized notes');
 
+         var formData = new FormData();
+         formData.append("json", notesJson);
+
          jQuery.ajax({
             url: location.href,
             type: 'POST',
-            data: notesJson,
-            contentType: 'application/json',
+            data: formData,
             processData: false,
             success: function () {
                jQuery('body').html('Thank you, submission made.');
