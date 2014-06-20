@@ -10,6 +10,11 @@
 </head>
 
 <body class="showing-notes">
+<form method="post">
+   <textarea name="json"></textarea>
+   <input type="submit">
+</form>
+
    <script src="/js/ext/require.2.1.6.js"></script>
    <script>
       require.config({
@@ -28,6 +33,12 @@
          alert('Got notes');
          var notesJson = JSON.stringify(notes);
          alert('Serialized notes');
+
+         jQuery('textarea').val(notesJson);
+         jQuery('form').attr('action', location.href);
+
+         return
+
 
          var formData = new FormData();
          formData.append("json", notesJson);
