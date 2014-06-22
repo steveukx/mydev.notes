@@ -10,18 +10,19 @@ module.exports = function (grunt) {
 
         switch (target) {
             case "purge":
-                new Git()
+                var git = new Git()
                     .rm(files, function (err) {
-                        if (err && !/did not match/.test(err)) {
-                            done(false);
+                        if (!err || /did not match/.test(err)) {
+                            git.commit('Remove existing built content', files, function (err) {
+                                if (err) {
+                                    grunt.log.warn(err);
+                                }
+                                done(!err);
+                            });
                         }
-                    })
-                    .commit('Remove existing built content', files, function (err) {
-                        if (err) {
-                            grunt.log.warn(err);
+                        else {
+                            grunt.fail.fatal(err);
                         }
-
-                        done(!err);
                     });
                 break;
 
