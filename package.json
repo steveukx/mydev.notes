@@ -1,7 +1,7 @@
 {
   "name": "notes-app",
   "description": "Notes application with persistence layer backed by Google auth",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "Steve King <steve@mydev.co>",
   "license": "MIT",
   "repository": "git://github.com/steveukx/mydev.notes",
