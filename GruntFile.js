@@ -2,6 +2,46 @@ module.exports = function (grunt) {
 
     'use strict';
 
+    grunt.registerTask('dist', 'dist content helper', function () {
+        var done = this.async();
+        var target = this.args[0];
+        var Git = require('simple-git');
+        var files = 'dist/*';
+
+        switch (target) {
+            case "purge":
+                new Git()
+                    .rm(files)
+                    .commit('Remove existing built content', files, function (err) {
+                        if (err && /did not match any files/.test(err)) {
+                            err = null;
+                        }
+
+                        if (err) {
+                            grunt.log.warn(err);
+                        }
+
+                        done(!err);
+                    });
+                break;
+
+            case "persist":
+                new Git()
+                    .add(files)
+                    .commit('Adding built content', files, function (err) {
+                        if (err) {
+                            grunt.log.warn(err);
+                        }
+
+                        done(!err);
+                    });
+                break;
+
+            default:
+                grunt.fail.fatal("Unknown target: " + this.name + ":" + target);
+        }
+    });
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
@@ -67,6 +107,13 @@ module.exports = function (grunt) {
 
     grunt.registerTask('install', ['clean', 'copy', 'less']);
 
-    grunt.registerTask('deploy', ['release:bump:add:commit:push:tag:pushTags:minor']);
+    // removes any existing dist already added to git
+    grunt.registerTask('clear', ['dist:purge', 'clean']);
+
+    // bumps up the version builds the distribution content and commits it
+    grunt.registerTask('create', ['release:bump:add:commit', 'install', 'dist:persist']);
+
+    // tags the project on the new version and pushes everything to remote
+    grunt.registerTask('deploy', ['clear', 'create', 'release:push:tag:pushTags:minor']);
 
 };
