@@ -9,6 +9,13 @@ module.exports = function (grunt) {
         var files = 'dist/*';
 
         switch (target) {
+            case "update":
+                grunt.config.merge({
+                    pkg: grunt.file.readJSON('package.json')
+                });
+                done(true);
+                break;
+
             case "purge":
                 var git = new Git()
                     .rm(files, function (err) {
@@ -119,7 +126,7 @@ module.exports = function (grunt) {
     grunt.registerTask('clear', ['dist:purge', 'clean']);
 
     // bumps up the version builds the distribution content and commits it
-    grunt.registerTask('create', ['release:bump:add:commit', 'install', 'dist:persist']);
+    grunt.registerTask('create', ['release:bump:add:commit', 'dist:update', 'install', 'dist:persist']);
 
     // tags the project on the new version and pushes everything to remote
     grunt.registerTask('deploy', ['clear', 'create', 'release:push:tag:pushTags:minor']);
