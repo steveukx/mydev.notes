@@ -4,7 +4,7 @@ body, html {
     margin: 0;
     font-family: verdana, helvetica, sans-serif;
     font-size: 12px;
-    -webkit-transition: all 500ms linear;
+    transition: all 500ms linear;
 }
 
 #site-container {
@@ -33,13 +33,13 @@ section {
     border-radius: 10px;
     padding: 10px;
 
-    -webkit-transition-property: -webkit-transform, opacity;
-    -webkit-transition-duration: 250ms;
-    -webkit-transition-timing-function: linear;
+    transition-property: -webkit-transform, opacity;
+    transition-duration: 250ms;
+    transition-timing-function: linear;
 }
 
 #notes-list {                 -webkit-transform: scale(1.4); opacity: 0; z-index: 1; }
-#editor {                     -webkit-transform: scale(0.6); opacity: 0; z-index: 1; -webkit-transition-delay: 100ms; bottom: 5px; }
+#editor {                     -webkit-transform: scale(0.6); opacity: 0; z-index: 1; transition-delay: 100ms; bottom: 5px; }
 #sync {                       -webkit-transform: scale(0.6); opacity: 0; z-index: 1; }
 
 .showing-notes #notes-list, .showing-form  #editor, .showing-sync #sync {
@@ -97,7 +97,7 @@ a.button {
 }
 
 @media (min-width: 770px) {
-    a { -webkit-transition: all 200ms linear; }
+    a { transition: all 200ms linear; }
     a:hover { text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
     a.button:hover { background: rgba(0,0,0,0.5); }
 }

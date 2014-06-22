@@ -6,7 +6,7 @@
    <meta name="apple-mobile-web-app-status-bar-style" content="black">
    <meta name="format-detection" content="telephone=no">
    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-   <link rel="stylesheet" href="css/style.css">
+   <link rel="stylesheet" href="/{{version}}/css/style.css">
 </head>
 
 <body class="showing-notes">
@@ -35,11 +35,10 @@
       </p>
    </section>
 
-   <script src="/js/ext/require.2.1.6.js"></script>
+   <script src="/{{version}}/js/ext/require.2.1.6.js"></script>
    <script>
       require.config({
-         baseUrl: '/js/',
-         urlArgs: 'release={{cacheBreaker}}',
+         baseUrl: '/{{version}}/js/',
          shim: {
             'jQuery': { exports: 'jQuery' }
          },
