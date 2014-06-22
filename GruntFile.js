@@ -120,15 +120,21 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('install', ['clean', 'copy', 'less']);
-
-    // removes any existing dist already added to git
-    grunt.registerTask('clear', ['dist:purge', 'clean']);
-
-    // bumps up the version builds the distribution content and commits it
-    grunt.registerTask('create', ['release:bump:add:commit', 'dist:update', 'install', 'dist:persist']);
+    grunt.registerTask('install', ['copy', 'less']);
 
     // tags the project on the new version and pushes everything to remote
-    grunt.registerTask('deploy', ['clear', 'create', 'release:push:tag:pushTags:minor']);
+    'minor major patch'.split(' ').forEach(function (revision, typeOnly) {
+        var tasks = [
+            'dist:purge',
+            'clean',
+            'release:bump:add:commit:' + revision,
+            'dist:update',
+            'install',
+            'dist:persist',
+            'release:push:tag:pushTags'
+        ];
+
+        grunt.registerTask('deploy' + (typeOnly ? '-' + revision : ''), tasks);
+    });
 
 };
