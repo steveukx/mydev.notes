@@ -11,12 +11,12 @@ module.exports = function (grunt) {
         switch (target) {
             case "purge":
                 new Git()
-                    .rm(files)
-                    .commit('Remove existing built content', files, function (err) {
-                        if (err && /did not match any files/.test(err)) {
-                            err = null;
+                    .rm(files, function (err) {
+                        if (err && !/did not match/.test(err)) {
+                            done(false);
                         }
-
+                    })
+                    .commit('Remove existing built content', files, function (err) {
                         if (err) {
                             grunt.log.warn(err);
                         }
