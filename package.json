@@ -22,7 +22,10 @@
     "grunt-release-steps": "~0.3.7",
     "grunt-contrib-requirejs": "~0.4.1",
     "grunt-contrib-uglify": "~0.2.2",
-    "grunt-git": "git+https://github.com/steveukx/grunt-git"
+    "grunt-git": "git+https://github.com/steveukx/grunt-git",
+    "grunt-contrib-copy": "^0.5.0",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-less": "^0.11.3"
   },
   "scripts": {
     "start": "node src/server/index"
