@@ -5,6 +5,7 @@ define(['jquery', 'domain/note', 'domain/notesmodel'], function(jQuery, Note, No
    function Notes(notesModel) {
       Notes.instance = this;
       this._model = notesModel;
+
       this.init = this._init.bind(this);
    }
 
@@ -104,12 +105,14 @@ define(['jquery', 'domain/note', 'domain/notesmodel'], function(jQuery, Note, No
                 jQuery.ajax('/user/notes', {
                    type: 'POST',
                    contentType: 'application/json',
-                   data: JSON.stringify({ notes: notesModel.notes }),
+                   data: JSON.stringify({ notes: notesModel.getDirty() }),
                    success: function(data) {
                       notesModel.clear(true); // kill any existing notes
                       for(var noteId in data) {
-                         var note = data[noteId];
-                         notesModel.addNote(new Note(note.content, noteId).withDate(note.date));
+                         if (data.hasOwnProperty(noteId)) {
+                            var note = data[noteId];
+                            notesModel.addNote(new Note(note.content, noteId).withDate(note.date));
+                         }
                       }
                       location.hash = '#list';
                    }

@@ -95,11 +95,20 @@ app.post('/notes', function(req, res) {
 
       if(Array.isArray(clientNotes)) {
          clientNotes.forEach(function(clientNote) {
+            var clientId = clientNote.id;
+            var serverNote = notes[clientNote.id];
             var clientDate = new Date(clientNote.date);
             var invalidDate = isNaN(+clientDate);
-            var clientId = clientNote.id;
+            var isDeleted = clientNote.removed;
 
-            if(invalidDate || !notes[ clientId] || notes[clientId].date < clientDate) {
+            if (isDeleted) {
+                if (serverNote) {
+                    serverNote.remove();
+                    delete notes[clientId];
+                }
+            }
+
+            else if(invalidDate || !notes[clientId] || notes[clientId].date < clientDate) {
                var note = notes[clientId] = notes[ clientId] || Note({ user: user, id: clientId });
                note.date = invalidDate ? new Date() : clientDate;
                note.text(clientNote.content).save();

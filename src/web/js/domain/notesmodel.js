@@ -81,9 +81,7 @@ define(['domain/note'], function (Note) {
    NotesModel.prototype.saveNote = function(noteContent, noteId) {
       var note = this.notesById[noteId];
       if(note) {
-         note.content = noteContent;
-         note.date = new Date();
-
+         note.setContent(noteContent);
          localStorage.setItem(note.id, JSON.stringify(note));
       }
       return this;
@@ -97,11 +95,11 @@ define(['domain/note'], function (Note) {
     */
    NotesModel.prototype.addNote = function(noteContent) {
       var note;
-      if(!(noteContent instanceof Note)) {
-         note = new Note(noteContent, 'note-' + Date.now());
+      if (noteContent instanceof Note) {
+         note = noteContent;
       }
       else {
-         note = noteContent;
+         note = new Note('', 'note-' + Date.now()).setContent(noteContent);
       }
       localStorage.setItem(note.id, JSON.stringify(note));
 
@@ -122,13 +120,7 @@ define(['domain/note'], function (Note) {
    NotesModel.prototype.removeNote  = function(noteId) {
       var note = this.notesById[noteId];
       if(note) {
-         var indexOf = this.notes.indexOf(note);
-         if(indexOf >= 0) {
-            this.notes.splice(indexOf, 1);
-         }
-         delete this.notesById[noteId];
-
-         localStorage.removeItem(noteId);
+         localStorage.setItem(note.id, JSON.stringify(note.setRemoved()));
       }
 
       return this;
@@ -140,9 +132,16 @@ define(['domain/note'], function (Note) {
     * @return
     */
    NotesModel.prototype.getSorted = function(sorterFn) {
-      return this.notes.sort(sorterFn);
+      return this.notes.filter(NotesModel.activeNotesFilter).sort(sorterFn);
    };
 
+   /**
+    * Gets just the Note instances that have been modified
+    * @returns {Note[]}
+    */
+   NotesModel.prototype.getDirty = function() {
+      return this.notes.filter(NotesModel.dirtyNotesFilter);
+   };
    /**
     * Utility method for applying sorting in the notes array.
     *
@@ -169,6 +168,24 @@ define(['domain/note'], function (Note) {
           modifiedB = +noteB.date;
 
       return modifiedA > modifiedB ? -1 : modifiedA < modifiedB ? 1 : 0;
+   };
+
+   /**
+    * Filter used to only retrieve notes that are not removed
+    * @param {Note} note
+    * @returns {boolean}
+    */
+   NotesModel.activeNotesFilter = function (note) {
+      return !note.removed;
+   };
+
+   /**
+    * Filter used to only retrieve notes that have been modified
+    * @param {Note} note
+    * @returns {boolean}
+    */
+   NotesModel.dirtyNotesFilter = function (note) {
+      return !!note.dirty;
    };
 
    return NotesModel;
