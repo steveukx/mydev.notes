@@ -12,15 +12,22 @@ module.exports = function (grunt) {
             case "purge":
                 var git = new Git()
                     .rm(files, function (err) {
-                        if (!err || /did not match/.test(err)) {
+                        if (!err) {
+                            grunt.log.writeln('No error adding dist files to be removed');
                             git.commit('Remove existing built content', files, function (err) {
+                                grunt.log.writeln('Committed removing dist files');
                                 if (err) {
                                     grunt.log.warn(err);
                                 }
                                 done(!err);
                             });
                         }
+                        else if (/did not match/.test(err)) {
+                            grunt.log.ok('No dist files to remove');
+                            done(true);
+                        }
                         else {
+                            grunt.log.writeln('Got errors removing dist files');
                             grunt.fail.fatal(err);
                         }
                     });
