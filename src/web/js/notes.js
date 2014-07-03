@@ -38,6 +38,7 @@ define(['jquery', 'domain/note', 'domain/notesmodel'], function(jQuery, Note, No
          ul.append(
              jQuery('<li><a href="#"></a></li>')
                  .find('a')
+                 .toggleClass('modified', notes[i].dirty)
                  .attr('href', '#' + notes[i].id)
                  .text(notes[i].content)
                  .end()

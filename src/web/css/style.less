@@ -50,47 +50,66 @@ ul {
     margin: 0;
     list-style-type: none;
 }
+
 li {
-    margin-bottom: 1em;
+   a {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0.5rem 0;
+
+      @media (max-width: 400px)  { /* iPhone/iPod */
+         padding: 1rem 0;
+      }
+
+      &.modified {
+         background: rgba(255,255,0,0.2);
+
+         &:before {
+            content: "\2729";
+            display: inline-block;
+            margin: 0 1rem;
+         }
+      }
+
+      .button {
+         margin-right: 5px;
+      }
+   }
 }
-li:last-child {
-    margin-bottom: 0;
-}
-li a {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-li a.button {
-    margin-right: 5px;
-}
+
 textarea {
     display: block;
     outline: none;
     font-size: 1em;
     box-sizing: border-box;
     width: 100%;
-    height: 90%; height: calc(100% - 3rem);
+    height: 90%; height: calc(~"100% - 3rem");
     border: none;
     padding: 0;
     background: transparent;
+
+   &:focus {
+      background: rgba(0,0,0,0.1);
+      font-family: Andale Mono, Courier New, monospace;
+   }
 }
-textarea:focus {
-    background: rgba(0,0,0,0.1);
-    font-family: Andale Mono, Courier New, monospace;
-}
+
 a {
     text-decoration: none;
     color: #333;
+
+   &.button {
+      display: inline-block;
+      padding: 0.5em;
+      margin-right: 0.5em;
+      border-radius: 0.5em;
+      background: rgba(0,0,0,0.3);
+      color: rgba(255,255,255,0.8);
+   }
 }
-a.button {
-    display: inline-block;
-    padding: 0.5em;
-    border-radius: 0.5em;
-    background: rgba(0,0,0,0.3);
-    color: rgba(255,255,255,0.8);
-}
+
 .buttons {
     position: absolute;
     bottom: 0.5em;
