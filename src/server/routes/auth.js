@@ -11,10 +11,12 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var database = require('../database');
 
 function User (profile) {
-    console.log('User', require('util').inspect(profile));
-
     var email = (Array.isArray(profile.emails) ? profile.emails[0] : profile.emails || profile.email) || null;
     var id = email || profile.id;
+
+    if (typeof id === "object" && id && id.value) {
+        id = id.value;
+    }
 
     this.id = typeof profile === "string" ? profile : Crypto.createHash('sha1')
         .update(id + hashSalt, 'utf8')
@@ -28,7 +30,6 @@ passport.serializeUser(function(user, done) {
 
 // converts the session stored value back into a complete user object
 passport.deserializeUser(function(id, done) {
-    console.log('deserializeUser', id);
     done(null, new User(id));
 });
 
