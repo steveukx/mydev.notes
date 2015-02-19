@@ -7,14 +7,18 @@
   "repository": "git://github.com/steveukx/mydev.notes",
   "main": "server/index.js",
   "dependencies": {
-    "gauth": "0.0.1",
-    "express": "~3.4.0",
-    "session-middleware": "~1.0.2",
-    "mongoose": "~3.6.20",
     "commands": "0.0.7",
-    "properties-reader": "0.0.5",
+    "express": "^4.10.4",
+    "express-session": "^1.10.3",
+    "express-subapp": "^0.2.0",
     "hogan-middleware": "0.0.1",
-    "less-middleware": "^1.0.3"
+    "less-middleware": "^1.0.3",
+    "mongoose": "~3.6.20",
+    "passport": "^0.2.1",
+    "passport-facebook": "^1.0.3",
+    "passport-google-oauth": "^0.1.5",
+    "properties-reader": "0.0.5",
+    "session-middleware": "~1.0.2"
   },
   "devDependencies": {
     "unit-test": "*",
