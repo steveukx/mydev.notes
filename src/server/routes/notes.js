@@ -36,7 +36,7 @@ app.put('/:note', function(req, res) {
     });
 });
 
-app.post('/', function(req, res) {
+app.post('/', require('body-parser').json(), function(req, res) {
     var clientNotes = req.body.notes;
     var user = req.user.id;
     var Note = req.app.get('database');
