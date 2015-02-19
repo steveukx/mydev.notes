@@ -1,8 +1,18 @@
-.idea/
+
+# node and npm
 node_modules/
 
+# private content
+auth.properties
+
+# temporary built content
 src/**/*.css
 
-*.iml
+# running locally
 *.googleauth
 *.pid
+*.log
+
+# IDE
+*.iml
+.idea/

@@ -1,6 +1,15 @@
 
 var Commands = require('commands');
 var express = require('express');
+var passport = require('passport');
+var subApp = require('express-subapp')();
+
+// add the names of any keys in the locals of the main application that should be added to the sub apps
+subApp.locals.push('version', 'i18n');
+
+// add the names of any 'app.get' properties in the main application to be set on the sub apps
+subApp.merged.push('properties', 'database');
+
 var app = express();
 
 (require('properties-reader')('src/properties/' + process.env.NODE_ENV + '.properties'))
@@ -11,27 +20,32 @@ var app = express();
     app.set(key, app.locals[key] = value);
 });
 
-app.use(express.logger({
-    stream: require('fs').createWriteStream(app.get('access.log.path'), {flags: 'a'}),
-    buffer: app.get('access.log.buffering'),
-    format: app.get('access.log.format')
+app.use(require('express-session')({
+    secret: 'keyboard cat',
+    resave: false,
+    rolling: false,
+    saveUninitialized: true
 }));
 
 if(process.env.NODE_ENV === 'development') {
-    app.set('version', 'dev');
-    app.use(express.errorHandler({showStack: true, dumpExceptions: true}));
+    app.set('version', app.locals.version = 'dev');
+    app.use(require('morgan')('dev'));
+    app.use(require('errorhandler')({log: true}));
     app.use('/dev', require('less-middleware')(app.get('static.content.dir')));
     app.use('/dev', express.static(app.get('static.content.dir'), {maxAge: app.get('static.content.cache')} ));
 }
 else {
-    app.set('version', require('../../package.json').version);
+    app.use(require('morgan')('short'));
+    app.set('version', app.locals.version = require('../../package.json').version);
 }
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.set('views', require('path').join(__dirname, '../templates'));
 app.set('view engine', 'mustache');
 app.engine('mustache', require('hogan-middleware').__express);
 
-app.locals.version = app.get('version');
 app.locals.i18n = function (key) {
     var val = app.get('i18n-' + key);
     var args = arguments;
@@ -47,14 +61,14 @@ app.locals.i18n = function (key) {
 
 app.set('database', require('./database'));
 
-app.use(express.static(require('path').join(__dirname, '../web'),
-    {maxAge: process.env.NODE_ENV === 'development' ? 0 : 86400000}));
-
-app.use('/user', require('./routes/user'));
-
-app.get('/', function (req, res) {
-    res.render('index');
+app.use(function (req, res, next) {
+    res.locals.user = req.user;
+    next();
 });
 
-app.listen(Commands.get('port', Commands.get('port', app.get('server.port'))));
+subApp.create(app);
+subApp.route('/', require('./routes/statics'));
+subApp.route('/auth', require('./routes/auth'));
+subApp.route('/notes', require('./routes/notes'));
 
+app.listen(Commands.get('port', Commands.get('port', app.get('server.port'))));
