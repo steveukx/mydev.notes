@@ -6,8 +6,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = mongoose.Schema.ObjectId;
 
-mongoose.connect('mongodb://localhost/mydev_notes');
-
 var Note = new Schema({
    user: { type: String },
    id: { type: String },
@@ -37,4 +35,4 @@ Note.method('text', function() {
    }
 });
 
-module.exports = mongoose.model('Note', Note);
+module.exports = mongoose.createConnection('mongodb://localhost/mydev_notes').model('Note', Note);

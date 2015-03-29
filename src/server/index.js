@@ -3,6 +3,7 @@ var Commands = require('commands');
 var express = require('express');
 var passport = require('passport');
 var subApp = require('express-subapp')();
+var MongooseStore = require('mongoose-express-session')(require('express-session').Store);
 
 // add the names of any keys in the locals of the main application that should be added to the sub apps
 subApp.locals.push('version', 'i18n');
@@ -24,7 +25,8 @@ app.use(require('express-session')({
     secret: 'keyboard cat',
     resave: false,
     rolling: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    store: new MongooseStore
 }));
 
 if(process.env.NODE_ENV === 'development') {
