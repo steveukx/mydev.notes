@@ -1,9 +1,4 @@
 {
    "script": "src/server/index.js",
-   "args": [
-       "-port", "9874",
-       "-base", "http://notes.mydev.co/user/login",
-       "-salt", "something-original-here"
-   ],
    "restart": true
 }
