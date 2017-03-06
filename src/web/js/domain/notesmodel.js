@@ -142,6 +142,15 @@ define(['domain/note'], function (Note) {
    NotesModel.prototype.getDirty = function() {
       return this.notes.filter(NotesModel.dirtyNotesFilter);
    };
+
+   /**
+    * Gets all notes in the model
+    * @returns {Note[]}
+    */
+   NotesModel.prototype.getAll = function () {
+      return this.notes.slice(0);
+   };
+
    /**
     * Utility method for applying sorting in the notes array.
     *

@@ -98,20 +98,24 @@ define(['jquery', 'domain/note', 'domain/notesmodel'], function (jQuery, Note, N
 
     Notes.prototype._doSync = function (e) {
         e.preventDefault();
-        var notesModel = this._model;
 
+        var notesModel = this._model;
+        var dirtyOnly = !jQuery('#post-all').is(':checked');
+        var data = JSON.stringify({notes: dirtyOnly ? notesModel.getDirty() : notesModel.getAll()});
 
         jQuery.get('/ping').then(function (result) {
             if (!result.loggedIn) {
                 Notes.login();
             }
             else {
-                jQuery.ajax('/notes', {
+               jQuery.ajax('/notes', {
                     type: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({notes: notesModel.getDirty()}),
+                    data: data,
                     success: function (data) {
-                        notesModel.clear(true); // kill any existing notes
+                        // kill any existing notes
+                        notesModel.clear(true);
+
                         for (var noteId in data) {
                             if (data.hasOwnProperty(noteId)) {
                                 var note = data[noteId];
