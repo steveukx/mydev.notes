@@ -1,9 +1,10 @@
+'use strict';
 
-var Commands = require('commands');
-var express = require('express');
-var passport = require('passport');
-var subApp = require('express-subapp')();
-var MongooseStore = require('mongoose-express-session')(require('express-session').Store);
+const Commands = require('commands');
+const express = require('express');
+const passport = require('passport');
+const subApp = require('express-subapp')();
+const MongooseStore = require('mongoose-express-session')(require('express-session').Store);
 
 // add the names of any keys in the locals of the main application that should be added to the sub apps
 subApp.locals.push('version', 'i18n');
@@ -11,10 +12,9 @@ subApp.locals.push('version', 'i18n');
 // add the names of any 'app.get' properties in the main application to be set on the sub apps
 subApp.merged.push('properties', 'database');
 
-var app = express();
+const app = express();
 
-(require('properties-reader')('src/properties/' + process.env.NODE_ENV + '.properties'))
-    .bindToExpress(app, __dirname, true);
+require('../properties').bindToExpress(app, __dirname, true);
 
 (require('properties-reader')('src/properties/i18n.properties')).each(function (key, value) {
     key = 'i18n-' + key;

@@ -1,5 +1,8 @@
+'use strict';
 
-var app = module.exports = require('express')();
+const properties = require('../../properties');
+
+const app = module.exports = require('express')();
 
 app.use(function (req, res, next) {
     if (!req.user) {
@@ -28,7 +31,7 @@ app.delete('/:note', function(req, res) {
 });
 
 app.put('/:note', function(req, res) {
-    var note = req.note || req.app.get('database')({ user: req.user, id: req.params.note });
+    let note = req.note || req.app.get('database')({ user: req.user, id: req.params.note });
     note.text(req.body.content).date = new Date(req.body.date);
 
     note.save(function(err) {
@@ -36,13 +39,13 @@ app.put('/:note', function(req, res) {
     });
 });
 
-app.post('/', require('body-parser').json(), function(req, res) {
-    var clientNotes = req.body.notes;
-    var user = req.user.id;
-    var Note = req.app.get('database');
+app.post('/', require('body-parser').json({limit: properties.get('request.max.size')}), function(req, res) {
+    const clientNotes = req.body.notes;
+    const user = req.user.id;
+    const Note = req.app.get('database');
 
     Note.find({ user: user }, function(err, serverNotes) {
-        var notes = (serverNotes || []).reduce(function(notes, note) {
+        let notes = (serverNotes || []).reduce(function(notes, note) {
             notes[note.id] = note;
             return notes;
         }, {});
@@ -63,7 +66,7 @@ app.post('/', require('body-parser').json(), function(req, res) {
                 }
 
                 else if(invalidDate || !notes[clientId] || notes[clientId].date < clientDate) {
-                    var note = notes[clientId] = notes[ clientId] || Note({ user: user, id: clientId });
+                    let note = notes[clientId] = notes[clientId] || Note({ user: user, id: clientId });
                     note.date = invalidDate ? new Date() : clientDate;
                     note.text(clientNote.content).save();
                 }
