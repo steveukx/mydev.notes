@@ -7,7 +7,7 @@ const subApp = require('express-subapp')();
 const MongooseStore = require('mongoose-express-session')(require('express-session').Store);
 
 // add the names of any keys in the locals of the main application that should be added to the sub apps
-subApp.locals.push('version', 'i18n');
+subApp.locals.push('version', 'production', 'i18n');
 
 // add the names of any 'app.get' properties in the main application to be set on the sub apps
 subApp.merged.push('properties', 'database');
@@ -29,8 +29,8 @@ app.use(require('express-session')({
    store: new MongooseStore
 }));
 
-app.locals.prod = process.env.NODE_ENV !== 'development';
-if (!app.locals.prod) {
+app.set('production', app.locals.production = /prod/.test(process.env.NODE_ENV));
+if (!app.get('production')) {
    app.set('version', app.locals.version = 'dev');
    app.use(require('morgan')('dev'));
    app.use(require('errorhandler')({log: true}));

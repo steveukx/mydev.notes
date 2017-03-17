@@ -40,12 +40,12 @@
         </p>
     </section>
 
-    {{^prod}}
+    {{^production}}
         <script src="/{{version}}/js/ext/require.2.1.6.js" data-main="/{{version}}/js/require.config"></script>
-    {{/prod}}
-    {{#prod}}
+    {{/production}}
+    {{#production}}
         <script src="/{{version}}/js/notes-app.min.js"></script>
-    {{/prod}}
+    {{/production}}
 </div>
 </body>
 </html>
