@@ -29,7 +29,8 @@ app.use(require('express-session')({
    store: new MongooseStore
 }));
 
-if (process.env.NODE_ENV === 'development') {
+app.locals.prod = process.env.NODE_ENV !== 'development';
+if (!app.locals.prod) {
    app.set('version', app.locals.version = 'dev');
    app.use(require('morgan')('dev'));
    app.use(require('errorhandler')({log: true}));
