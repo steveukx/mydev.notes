@@ -1,61 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <title>Quick Notes</title>
+    <title>Quick Notes</title>
     {{>meta}}
 </head>
 
 <body class="showing-notes">
 <div id="site-container">
-   <section id="notes-list" data-body-class="showing-notes">
-      <ul>
-      </ul>
-   </section>
+    <section id="notes-list" data-body-class="showing-notes">
+        <ul>
+        </ul>
+    </section>
 
-   <section id="editor" data-body-class="showing-form">
-      <textarea></textarea>
+    <section id="editor" data-body-class="showing-form">
+        <textarea></textarea>
 
-      <div class="buttons">
-         <a href="#list" class="button cancel">cancel</a>
-         <a href="#list" class="button save">save</a>
-      </div>
-   </section>
+        <div class="buttons">
+            <a href="#list" class="button cancel">cancel</a>
+            <a href="#list" class="button save">save</a>
+        </div>
+    </section>
 
-   <section id="sync" data-body-class="showing-sync">
-      <p>Synchronise your notes, pick up new notes made on other devices and make sure you don't lose the notes you've
-         made so far on this device.</p>
+    <section id="sync" data-body-class="showing-sync">
+        <p>Synchronise your notes, pick up new notes made on other devices and make sure you don't lose the notes you've
+            made so far on this device.</p>
 
-      <p>
-         <a href="#list" class="button">Cancel</a>
-         <a id="doSync" href="#" class="button">Sync Now</a>
-      </p>
+        <p>
+            <a href="#list" class="button">Cancel</a>
+            <a id="doSync" href="#" class="button">Sync Now</a>
+        </p>
 
 
-       <p>
-           Options:
-           <label class="block">
-               <input type="checkbox" id="post-all">
-               Post all (not just changed)
-           </label>
-       </p>
-   </section>
+        <p>
+            Options:
+            <label class="block">
+                <input type="checkbox" id="post-all">
+                Post all (not just changed)
+            </label>
+        </p>
+    </section>
 
-   <script src="/{{version}}/js/ext/require.2.1.6.js"></script>
-   <script>
-      require.config({
-         baseUrl: '/{{version}}/js/',
-         shim: {
-            'jQuery': { exports: 'jQuery' }
-         },
-         paths: {
-            jquery: 'ext/jquery-2.0.3.min'
-         }
-      });
-
-      require(['notes', 'domain/notesmodel'], function(Notes, NotesModel) {
-         new Notes(new NotesModel).init();
-      });
-   </script>
+    <script
+        src="/{{version}}/js/ext/require.2.1.6.js"
+        data-main="/{{version}}/js/require.config"></script>
 </div>
 </body>
 </html>
