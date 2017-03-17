@@ -1,140 +1,134 @@
 module.exports = function (grunt) {
 
-    'use strict';
+   'use strict';
 
-    grunt.registerTask('dist', 'dist content helper', function () {
-        var done = this.async();
-        var target = this.args[0];
-        var Git = require('simple-git');
-        var files = 'dist/*';
+   grunt.initConfig({
+      pkg: grunt.file.readJSON('package.json'),
 
-        switch (target) {
-            case "update":
-                grunt.config.merge({
-                    pkg: grunt.file.readJSON('package.json')
-                });
-                done(true);
-                break;
+      clean: [
+         'dist/<%= pkg.version %>'
+      ],
 
-            case "purge":
-                var git = new Git()
-                    .rm(files, function (err) {
-                        if (!err) {
-                            grunt.log.writeln('No error adding dist files to be removed');
-                            git.commit('Remove existing built content', files, function (err) {
-                                grunt.log.writeln('Committed removing dist files');
-                                if (err) {
-                                    grunt.log.warn(err);
-                                }
-                                done(!err);
-                            });
-                        }
-                        else if (/did not match/.test(err)) {
-                            grunt.log.ok('No dist files to remove');
-                            done(true);
-                        }
-                        else {
-                            grunt.log.writeln('Got errors removing dist files');
-                            grunt.fail.fatal(err);
-                        }
-                    });
-                break;
-
-            case "persist":
-                new Git()
-                    .add(files)
-                    .commit('Adding built content', files, function (err) {
-                        if (err) {
-                            grunt.log.warn(err);
-                        }
-
-                        done(!err);
-                    });
-                break;
-
-            default:
-                grunt.fail.fatal("Unknown target: " + this.name + ":" + target);
-        }
-    });
-
-    grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
-
-        git: {
+      less: {
+         dist: {
             options: {
-                message: "Build release <%= pkg.version %>"
+               paths: ['src/web/css', 'src/web/img']
             },
-            commit: {
-                files: [
-                    { src: [ 'src/web/release/*.js' ] }
-                ]
+            files: {
+               'dist/<%= pkg.version %>/css/style.css': 'src/web/css/style.less'
             }
-        },
+         }
+      },
 
-        release: {
+      mkdir: {
+         dist: {
             options: {
-                file: 'package.json',
-                tagName: '<%= version %>', //default: '<%= version %>'
-                commitMessage: 'Release <%= version %>', //default: 'release <%= version %>'
-                tagMessage: 'Tag version <%= version %>' //default: 'Version <%= version %>'
+               mode: 0o755,
+               create: [
+                  'dist/<%= pkg.version %>/css',
+                  'dist/<%= pkg.version %>/js'
+               ]
             }
-        },
+         }
+      },
 
-        less: {
-            development: {
-                options: {
-                    paths: ['src/web/css', 'src/web/img']
-                },
-                files: {
-                    'dist/<%= pkg.version %>/css/style.css': 'src/web/css/style.less'
-                }
+      release: {
+         options: {
+            file: 'package.json',
+            tagName: '<%= version %>', //default: '<%= version %>'
+            commitMessage: 'Release <%= version %>', //default: 'release <%= version %>'
+            tagMessage: 'Tag version <%= version %>' //default: 'Version <%= version %>'
+         }
+      },
+
+      requirejs: {
+         dist: {
+            options: {
+               baseUrl: "src/web/js",
+               mainConfigFile: "src/web/js/require.config.js",
+               name: "../../../node_modules/almond/almond",
+               // assumes a production build using almond, if you don't use almond, you
+               // need to set the "includes" or "modules" option instead of name
+
+               exclude: [],
+               include: [
+                  "<%= pkg.app.main %>"
+               ],
+               insertRequire: [
+                  "<%= pkg.app.main %>"
+               ],
+
+               optimize: 'none',
+               out: "dist/<%= pkg.version %>/js/<%= pkg.name %>.js",
+
+               wrap: {
+                  start: `
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        //Allow using this built library as an AMD module 
+        //in another project. That other project will only 
+        //see this AMD call, not the internal modules in 
+        //the closure below. 
+        define([], factory);
+    } else {
+        //Browser globals case. Just assign the 
+        //result to a property on the global. 
+        root.<%= pkg.app.name %> = factory();
+    }
+}(this, function () {
+
+`,
+                  end: `
+
+    return require('<%= pkg.app.main %>');
+}));
+
+`
+               }
+            }
+         }
+      },
+
+      uglify: {
+         dist: {
+            options: {
+               mangle: false,
+               sourceMap: 'dist/<%= pkg.version %>/js/<%= pkg.name %>.map',
+               sourceMappingURL: '/<%= pkg.version %>/js/<%= pkg.name %>.map'
             },
-            production: {
-
+            files: {
+               'dist/<%= pkg.version %>/js/<%= pkg.name %>.min.js': 'dist/<%= pkg.version %>/js/<%= pkg.name %>.js'
             }
-        },
+         }
+      }
 
-        copy: {
-            main: {
-                files: [
-                    {
-                        expand: true,
-                        cwd: 'src/web/',
-                        src: ['img/**', 'js/**', '*'],
-                        dest: 'dist/<%= pkg.version %>/'
-                    }
-                ]
-            }
-        },
+   });
 
-        clean: ['dist']
-    });
+   grunt.loadNpmTasks('grunt-contrib-clean');
+   grunt.loadNpmTasks('grunt-contrib-less');
+   grunt.loadNpmTasks('grunt-contrib-requirejs');
+   grunt.loadNpmTasks('grunt-contrib-uglify');
+   grunt.loadNpmTasks('grunt-mkdir');
+   grunt.loadNpmTasks('grunt-release-steps');
 
-    grunt.loadNpmTasks('grunt-contrib-less');
-
-    grunt.loadNpmTasks('grunt-release-steps');
-
-    grunt.loadNpmTasks('grunt-git');
-
-    grunt.loadNpmTasks('grunt-contrib-copy');
-
-    grunt.loadNpmTasks('grunt-contrib-clean');
-
-    grunt.registerTask('install', ['copy', 'less']);
-
-    // tags the project on the new version and pushes everything to remote
-    'minor major patch'.split(' ').forEach(function (revision, typeOnly) {
-        var tasks = [
-            'dist:purge',
-            'clean',
-            'release:bump:add:commit:' + revision,
-            'dist:update',
-            'install',
-            'dist:persist',
+   'minor major patch'.split(' ').forEach(revision => {
+      grunt.registerTask(
+         `deploy${revision}`,
+         [
+            `release:bump:add:commit:${revision}`,
             'release:push:tag:pushTags'
-        ];
+         ]
+      );
+   });
 
-        grunt.registerTask('deploy' + (typeOnly ? '-' + revision : ''), tasks);
-    });
+   grunt.registerTask('deploy', 'Alias for deploy-minor', ['deploy-minor']);
+
+   grunt.registerTask('install', [
+      'mkdir:dist',
+      'less:dist',
+      'requirejs:dist',
+      'uglify:dist'
+   ]);
+
 
 };

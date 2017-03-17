@@ -6,6 +6,10 @@
   "license": "MIT",
   "repository": "git://github.com/steveukx/mydev.notes",
   "main": "server/index.js",
+  "app": {
+    "name": "notesApp",
+    "main": "app"
+  },
   "dependencies": {
     "body-parser": "^1.12.0",
     "cacheable-middleware": "0.0.1",
@@ -14,6 +18,10 @@
     "express": "^4.10.4",
     "express-session": "^1.10.3",
     "express-subapp": "^0.2.0",
+    "grunt-contrib-less": "^0.11.3",
+    "grunt-contrib-requirejs": "^0.4.4",
+    "grunt-contrib-uglify": "^0.2.7",
+    "grunt-mkdir": "^1.0.0",
     "hogan-middleware": "0.0.1",
     "less-middleware": "^1.0.3",
     "mongoose": "~3.6.20",
@@ -26,19 +34,15 @@
     "session-middleware": "~1.0.2"
   },
   "devDependencies": {
-    "unit-test": "*",
+    "almond": "^0.3.3",
     "grunt": "~0.4.1",
-    "grunt-release-steps": "~0.3.7",
-    "grunt-contrib-requirejs": "~0.4.1",
-    "grunt-contrib-uglify": "~0.2.2",
-    "grunt-git": "git+https://github.com/steveukx/grunt-git",
-    "grunt-contrib-copy": "^0.5.0",
     "grunt-contrib-clean": "^0.5.0",
-    "grunt-contrib-less": "^0.11.3",
+    "grunt-contrib-copy": "^0.5.0",
+    "grunt-release-steps": "~0.3.7",
     "mustache": "^2.3.0",
     "pug": "^2.0.0-beta11",
     "readdir": "0.0.13",
-    "simple-git": "^0.8.0"
+    "unit-test": "*"
   },
   "scripts": {
     "start": "node src/server/index"
