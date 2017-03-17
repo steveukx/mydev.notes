@@ -111,12 +111,20 @@ module.exports = function (grunt) {
    grunt.loadNpmTasks('grunt-mkdir');
    grunt.loadNpmTasks('grunt-release-steps');
 
+   grunt.registerTask('update-pkg', function () {
+      grunt.log.ok('Running function');
+      grunt.config.merge({
+         pkg: grunt.file.readJSON('package.json')
+      });
+   });
+
    'minor major patch'.split(' ').forEach(revision => {
       grunt.registerTask(
          `deploy-${revision}`,
          [
             `release:bump:add:commit:${revision}`,
-            'release:push:tag:pushTags'
+            'release:push:tag:pushTags',
+            'update-pkg'
          ]
       );
    });
