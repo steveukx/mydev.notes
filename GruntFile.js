@@ -113,7 +113,7 @@ module.exports = function (grunt) {
 
    'minor major patch'.split(' ').forEach(revision => {
       grunt.registerTask(
-         `deploy${revision}`,
+         `deploy-${revision}`,
          [
             `release:bump:add:commit:${revision}`,
             'release:push:tag:pushTags'
