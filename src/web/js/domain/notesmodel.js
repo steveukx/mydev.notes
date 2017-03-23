@@ -104,9 +104,7 @@ define(['domain/note'], function (Note) {
       localStorage.setItem(note.id, JSON.stringify(note));
 
       this.notes.push(note);
-      this.notesById[note.id] = note;
-
-      return this;
+      return this.notesById[note.id] = note;
    };
 
    /**
