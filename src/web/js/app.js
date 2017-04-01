@@ -1,6 +1,6 @@
 define([
    './notes',
-   './domain/notesmodel'
+   './domain/notes-model'
 ], function (
    Notes,
    NotesModel

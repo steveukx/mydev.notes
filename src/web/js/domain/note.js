@@ -42,6 +42,14 @@ define(function () {
    Note.prototype.id = null;
 
    /**
+    * Gets whether this note is a new note. Saving a new note will generated a fresh id.
+    * @returns {boolean}
+    */
+   Note.prototype.isNew = function () {
+      return !this.id || this.id === 'new';
+   };
+
+   /**
     * Chainable date setter
     * @param {Date|Number|String} date
     */

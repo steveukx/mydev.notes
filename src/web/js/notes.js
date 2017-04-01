@@ -1,13 +1,19 @@
 define([
    'jquery',
    './domain/note',
-   './domain/notesmodel',
-   './actions/navigage-to-note'
+   './domain/notes-model',
+   './actions/delete-note',
+   './actions/navigate-to-note',
+   './actions/show-note',
+   './actions/start-note'
 ], function (
    jQuery,
    Note,
    NotesModel,
-   navigateToNote
+   deleteNote,
+   navigateToNote,
+   showNote,
+   startNote
 ) {
 
    "use strict";
@@ -25,10 +31,7 @@ define([
     * @param noteId
     */
    Notes.prototype.showNote = function (noteId) {
-      var note = this._editingNote = this._model.notesById[noteId];
-      jQuery('textarea').val(note ? note.content : '');
-
-      document.body.className = 'showing-form';
+      showNote(this._editingNote = this._model.notesById[noteId]);
    };
 
    /**
@@ -62,14 +65,14 @@ define([
    };
 
    Notes.prototype.copyNote = function (e) {
+      e.preventDefault();
+
       var note = this._editingNote;
       if (!note || !note.content) {
          return;
       }
 
-      e.preventDefault();
-
-      navigateToNote(this._model.addNote(note.content));
+      startNote(this._model, note.content);
    };
 
    /**
@@ -101,14 +104,15 @@ define([
 
    Notes.prototype._handleSaveClicked = function () {
       var newVal = jQuery('textarea').val();
+      var editingNote = this._editingNote;
 
       // editing an existing note - decide whether to update or delete it
-      if (this._editingNote) {
+      if (editingNote && !editingNote.isNew()) {
          if (newVal) {
             this._model.saveNote(newVal, this._editingNote.id);
          }
-         else if (confirm('Are you sure you want to delete this item?')) {
-            this._model.removeNote(this._editingNote.id);
+         else {
+            deleteNote(this._model, this._editingNote.id);
          }
       }
 
