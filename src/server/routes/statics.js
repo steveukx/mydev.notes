@@ -1,15 +1,21 @@
 'use strict';
 
-const app = module.exports = require('express')();
+const express = require('express');
 
-app.use(require('cacheable-middleware')());
+module.exports = function (render) {
 
-app.get('/', function (req, res) {
-   res.render('index');
-});
+   const app = express();
 
-app.get('/ping', function (req, res) {
-   res.cacheFor(0).send({
-      loggedIn: !!req.user
+   app.get('/', (req, res) => {
+      render(res, 'index');
    });
-});
+
+   app.get('/ping', (req, res) => {
+      res.send({
+         loggedIn: !!req.user
+      });
+   });
+
+   return app;
+
+};

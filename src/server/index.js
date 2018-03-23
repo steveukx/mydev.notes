@@ -2,15 +2,9 @@
 
 const Commands = require('commands');
 const express = require('express');
+
 const passport = require('passport');
-const subApp = require('express-subapp')();
-const MongooseStore = require('mongoose-express-session')(require('express-session').Store);
-
-// add the names of any keys in the locals of the main application that should be added to the sub apps
-subApp.locals.push('version', 'production', 'i18n');
-
-// add the names of any 'app.get' properties in the main application to be set on the sub apps
-subApp.merged.push('properties', 'database');
+const database = require('./database');
 
 const app = express();
 
@@ -22,11 +16,13 @@ require('../properties').bindToExpress(app, __dirname, true);
 });
 
 app.use(require('express-session')({
-   secret: 'keyboard cat',
-   resave: false,
-   rolling: false,
-   saveUninitialized: true,
-   store: new MongooseStore
+   secret: 'This is a secret',
+   cookie: {
+      maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+   },
+   store: require('./session'),
+   resave: true,
+   saveUninitialized: true
 }));
 
 app.set('production', app.locals.production = /prod/.test(process.env.NODE_ENV));
@@ -69,9 +65,25 @@ app.use(function (req, res, next) {
    next();
 });
 
-subApp.create(app);
-subApp.route('/', require('./routes/statics'));
-subApp.route('/auth', require('./routes/auth'));
-subApp.route('/notes', require('./routes/notes'));
+app.use('/', require('./routes/statics')(render));
+app.use('/auth', require('./routes/auth')(render));
+app.use('/notes', authorised, require('./routes/notes')(render));
 
 app.listen(Commands.get('port', Commands.get('port', app.get('server.port'))));
+
+
+function authorised (req, res, next) {
+   if (!req.user) {
+      req.session.loginRedirect = req.originalUrl;
+      res.redirect('/auth');
+   }
+   else {
+      next();
+   }
+}
+
+function render (res, view, locals) {
+   app.render(view, locals || {}, (err, html) => {
+      res.send(html);
+   });
+}

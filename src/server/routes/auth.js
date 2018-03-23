@@ -1,4 +1,6 @@
 
+module.exports = routing;
+
 var Crypto = require('crypto');
 var Commands = require('commands');
 var hashSalt = Commands.get('salt', process.env.sessionKey);
@@ -8,7 +10,6 @@ var express = require('express');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-var database = require('../database');
 
 function User (profile) {
     var email = (Array.isArray(profile.emails) ? profile.emails[0] : profile.emails || profile.email) || null;
@@ -57,18 +58,22 @@ var authenticatedRequestHandler = function (req, res) {
     res.redirect(req.session.loginRedirect || '/');
 };
 
-var app = express();
+function routing (render) {
+   const app = express();
 
-app.get('/facebook', passport.authenticate('facebook', { scope: [] }));
-app.get('/facebook/callback',
-    passport.authenticate('facebook', { failureRedirect: '/login' }), authenticatedRequestHandler);
+   app.get('/facebook', passport.authenticate('facebook', { scope: [] }));
+   app.get('/facebook/callback',
+      passport.authenticate('facebook', { failureRedirect: '/login' }), authenticatedRequestHandler);
 
-app.get('/google', passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/userinfo.email' }));
-app.get('/google/callback',
-    passport.authenticate('google', { failureRedirect: '/login' }), authenticatedRequestHandler);
+   app.get('/google', passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/userinfo.email' }));
+   app.get('/google/callback',
+      passport.authenticate('google', { failureRedirect: '/login' }), authenticatedRequestHandler);
 
-app.get('/', function (req, res) {
-    res.render('login');
-});
+   app.get('/', function (req, res) {
+      render(res, 'login');
+   });
 
-module.exports = app;
+   return app;
+}
+
+
