@@ -34,10 +34,7 @@ module.exports = function (grunt) {
 
       release: {
          options: {
-            file: 'package.json',
-            tagName: '<%= version %>', //default: '<%= version %>'
-            commitMessage: 'Release <%= version %>', //default: 'release <%= version %>'
-            tagMessage: 'Tag version <%= version %>' //default: 'Version <%= version %>'
+            npm: false,
          }
       },
 
@@ -109,27 +106,9 @@ module.exports = function (grunt) {
    grunt.loadNpmTasks('grunt-contrib-requirejs');
    grunt.loadNpmTasks('grunt-contrib-uglify');
    grunt.loadNpmTasks('grunt-mkdir');
-   grunt.loadNpmTasks('grunt-release-steps');
+   grunt.loadNpmTasks('grunt-release');
 
-   grunt.registerTask('update-pkg', function () {
-      grunt.log.ok('Running function');
-      grunt.config.merge({
-         pkg: grunt.file.readJSON('package.json')
-      });
-   });
-
-   'minor major patch'.split(' ').forEach(revision => {
-      grunt.registerTask(
-         `deploy-${revision}`,
-         [
-            `release:bump:add:commit:${revision}`,
-            'release:push:tag:pushTags',
-            'update-pkg'
-         ]
-      );
-   });
-
-   grunt.registerTask('deploy', 'Alias for deploy-minor', ['deploy-minor']);
+   'minor major patch'.split(' ').forEach(revision => grunt.registerTask(`${revision}`, [ `release:${revision}` ]));
 
    grunt.registerTask('install', [
       'mkdir:dist',

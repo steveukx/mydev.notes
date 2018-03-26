@@ -40,7 +40,7 @@
     "grunt-contrib-requirejs": "^1.0.0",
     "grunt-contrib-uglify": "^3.3.0",
     "grunt-mkdir": "^1.0.0",
-    "grunt-release-steps": "^0.3.7",
+    "grunt-release": "^0.14.0",
     "less-middleware": "^2.2.1",
     "morgan": "^1.9.0",
     "mustache": "^2.3.0",
