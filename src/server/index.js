@@ -46,8 +46,8 @@ app.set('view engine', 'mustache');
 app.engine('mustache', require('hogan-middleware').__express);
 
 app.locals.i18n = function (key) {
-   var val = app.get('i18n-' + key);
-   var args = arguments;
+   let val = app.get('i18n-' + key);
+   const args = arguments;
 
    if (/\{.+\}/.test(val)) {
       val = val.replace(/\{([^\}]+)\}/, function (_, key) {
