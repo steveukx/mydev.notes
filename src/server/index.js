@@ -25,7 +25,7 @@ app.use(require('express-session')({
    saveUninitialized: true
 }));
 
-app.set('production', app.locals.production = /prod/.test(process.env.NODE_ENV));
+app.set('production', app.locals.production = !/dev/i.test(process.env.NODE_ENV));
 if (!app.get('production')) {
    app.set('version', app.locals.version = 'dev');
    app.use(require('morgan')('dev'));
