@@ -48,6 +48,7 @@
     "unit-test": "*"
   },
   "scripts": {
-    "start": "node ./src/server/index"
+    "start": "forever start --uid notes -a ./src/server/index.js",
+    "stop": "forever stop notes",
   }
 }
