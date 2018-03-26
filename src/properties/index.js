@@ -1,8 +1,9 @@
 'use strict';
 
 const reader = require('properties-reader');
+const env = /dev/i.test(process.env.NODE_ENV) ? 'development' : 'production';
 
-const properties = reader(`${__dirname}/${process.env.NODE_ENV}.properties`);
+const properties = reader(`${ __dirname }/${ env }.properties`);
 
 module.exports = properties.getAllProperties();
 
