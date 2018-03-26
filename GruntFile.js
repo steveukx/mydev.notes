@@ -35,9 +35,9 @@ module.exports = function (grunt) {
       release: {
          options: {
             file: 'package.json',
-            tagName: '<%= version %>', //default: '<%= version %>'
-            commitMessage: 'Release <%= version %>', //default: 'release <%= version %>'
-            tagMessage: 'Tag version <%= version %>' //default: 'Version <%= version %>'
+            tagName: '<%= pkg.version %>', //default: '<%= version %>'
+            commitMessage: 'Release <%= pkg.version %>', //default: 'release <%= version %>'
+            tagMessage: 'Tag version <%= pkg.version %>' //default: 'Version <%= version %>'
          }
       },
 
