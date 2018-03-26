@@ -35,7 +35,7 @@ passport.deserializeUser(function(id, done) {
 });
 
 // Facebook strategy
-passport.use(new FacebookStrategy({
+properties.get('facebook.client.id') && passport.use(new FacebookStrategy({
     clientID: properties.get('facebook.client.id'),
     clientSecret: properties.get('facebook.client.secret'),
     callbackURL: properties.get('auth.host') + '/facebook/callback'
@@ -44,7 +44,7 @@ passport.use(new FacebookStrategy({
 }));
 
 // Google oAuth2 strategy
-passport.use(new GoogleStrategy({
+properties.get('google.client.id') && passport.use(new GoogleStrategy({
         clientID: properties.get('google.client.id'),
         clientSecret: properties.get('google.client.secret'),
         callbackURL: properties.get('auth.host') + '/google/callback'
