@@ -49,6 +49,6 @@
   },
   "scripts": {
     "start": "forever start --uid notes -a ./src/server/index.js",
-    "stop": "forever stop notes",
+    "stop": "forever stop notes"
   }
 }
