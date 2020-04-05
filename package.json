@@ -42,7 +42,7 @@
     "grunt-mkdir": "^1.0.0",
     "grunt-release": "^0.14.0",
     "less-middleware": "^2.2.1",
-    "morgan": "^1.9.0",
+    "morgan": "^1.9.1",
     "mustache": "^2.3.0",
     "pug": "^2.0.3",
     "readdir": "0.0.13",
