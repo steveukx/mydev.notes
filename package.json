@@ -44,7 +44,7 @@
     "less-middleware": "^2.2.1",
     "morgan": "^1.9.1",
     "mustache": "^2.3.0",
-    "pug": "^2.0.3",
+    "pug": "^3.0.1",
     "readdir": "0.0.13",
     "unit-test": "0.0.9"
   }
